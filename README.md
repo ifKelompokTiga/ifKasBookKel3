@@ -2,6 +2,9 @@
 
 Buku Kas Digital adalah aplikasi web pencatatan keuangan sederhana untuk memantau pemasukan dan pengeluaran harian. Aplikasi ini dirancang dengan antarmuka yang bersih, fungsional, dan estetis menggunakan tema khas "Natural Tones".
 
+<img width="1366" height="643" alt="{8D51D4E6-6310-4DFA-A1C5-87AA42FD9D8C}" src="https://github.com/user-attachments/assets/710daffb-6c6a-4add-b5cc-a9043ae7de51" />
+
+
 ## ✨ Fitur Utama
 
 - **Dashboard Ringkasan Real-time**: Menampilkan Saldo Saat Ini, Total Pemasukan, dan Total Pengeluaran.
