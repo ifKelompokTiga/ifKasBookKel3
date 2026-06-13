@@ -264,12 +264,26 @@ class="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[9999]">
     const dateFormat = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
     window.onload = () => {
-        document.getElementById('todayDate').innerText = new Intl.DateTimeFormat('id-ID', { dateStyle: 'full' }).format(new Date());
-        document.getElementById('date').valueAsDate = new Date();
-        updateCategory();
-        updateSummary();
-        renderTransactions();
-        lucide.createIcons();
+
+    const currentUser =
+        JSON.parse(localStorage.getItem('currentUser'));
+
+    if (currentUser) {
+        document.getElementById('loginOverlay').style.display = 'none';
+    }
+
+    document.getElementById('todayDate').innerText =
+        new Intl.DateTimeFormat(
+            'id-ID',
+            { dateStyle: 'full' }
+        ).format(new Date());
+
+    document.getElementById('date').valueAsDate = new Date();
+
+    updateCategory();
+    updateSummary();
+    renderTransactions();
+    lucide.createIcons();
     };
 
     function setType(type) {
@@ -406,6 +420,58 @@ class="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[9999]">
         lucide.createIcons();
         setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(-20px)'; setTimeout(() => toast.remove(), 500); }, 3000);
     }
+
+    // ================= LOGIN SYSTEM =================
+
+const USERS = {
+    admin: {
+        password: 'admin123',
+        role: 'admin'
+    },
+    user: {
+        password: 'user123',
+        role: 'user'
+    }
+};
+
+function login() {
+
+    const username =
+        document.getElementById('username').value;
+
+    const password =
+        document.getElementById('password').value;
+
+    if (
+        USERS[username] &&
+        USERS[username].password === password
+    ) {
+
+        localStorage.setItem(
+            'currentUser',
+            JSON.stringify({
+                username,
+                role: USERS[username].role
+            })
+        );
+
+        document.getElementById('loginOverlay').style.display = 'none';
+
+        showToast('Login berhasil');
+
+    } else {
+
+        alert('Username atau Password salah');
+
+    }
+}
+function logout() {
+
+    localStorage.removeItem('currentUser');
+    location.reload();
+
+}
+    
 </script>
 </body>
 </html>
