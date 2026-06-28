@@ -107,6 +107,12 @@ class="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[9999]">
                 <p id="todayDate" class="text-sm font-semibold text-slate-700"></p>
                 <p class="text-xs text-slate-400">Status: Kelompok 2</p>
             </div>
+
+            <button
+                onclick="logout()"
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold transition">
+                Logout
+            </button>
         </div>
     </div>
 </nav>
@@ -465,10 +471,15 @@ function login() {
 
     }
 }
-function logout() {
+function logout(){
 
-    localStorage.removeItem('currentUser');
-    location.reload();
+    if(confirm("Apakah Anda yakin ingin logout?")){
+
+        localStorage.removeItem("currentUser");
+
+        window.location.reload();
+
+    }
 
 }
     
