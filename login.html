@@ -3,69 +3,431 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login KasBook</title>
+<title>Neo Finance | Login</title>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
 }
 
-.login-container {
-    width: 350px;
-    margin: 100px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
+body{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    min-height:100vh;
+
+    background:
+    radial-gradient(circle at top left,#c7d2fe 0%,transparent 35%),
+    radial-gradient(circle at bottom right,#ddd6fe 0%,transparent 35%),
+    linear-gradient(135deg,#eef2ff,#f8fafc);
+
+    overflow:hidden;
 }
 
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    box-sizing: border-box; /* Tambahan agar input tidak melebihi container */
+/* Background Blur */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+    height:450px;
+
+    background:#6366f1;
+
+    opacity:.12;
+
+    border-radius:50%;
+
+    top:-150px;
+    left:-150px;
+
+    filter:blur(50px);
+
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    cursor: pointer;
-    box-sizing: border-box; /* Tambahan agar button sejajar dengan input */
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:400px;
+    height:400px;
+
+    background:#8b5cf6;
+
+    opacity:.12;
+
+    border-radius:50%;
+
+    bottom:-120px;
+    right:-120px;
+
+    filter:blur(50px);
+
 }
+
+/* Login Card */
+
+.login-container{
+
+    position:relative;
+
+    z-index:2;
+
+    width:420px;
+
+    padding:40px;
+
+    border-radius:28px;
+
+    background:rgba(255,255,255,.75);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.5);
+
+    box-shadow:0 20px 50px rgba(0,0,0,.08);
+
+}
+
+/* Logo */
+
+.logo{
+
+    width:85px;
+    height:85px;
+
+    margin:auto;
+
+    border-radius:22px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+
+    color:white;
+
+    font-size:38px;
+
+    margin-bottom:20px;
+
+}
+
+.logo:hover{
+
+    transform:rotate(10deg);
+
+    transition:.4s;
+
+}
+
+h1{
+
+    text-align:center;
+
+    font-size:32px;
+
+    color:#111827;
+
+}
+
+h1 span{
+
+    color:#6366f1;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#64748b;
+
+    margin-top:8px;
+
+    margin-bottom:30px;
+
+    font-size:14px;
+
+}
+
+/* Input */
+
+.input-group{
+
+    margin-bottom:18px;
+
+}
+
+.input-group input{
+
+    width:100%;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    border:1px solid #dbeafe;
+
+    background:white;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+.input-group input:focus{
+
+    outline:none;
+
+    border-color:#6366f1;
+
+    box-shadow:0 0 0 4px rgba(99,102,241,.15);
+
+}
+
+/* Password */
+
+.password-box{
+
+    position:relative;
+
+}
+
+.password-box span{
+
+    position:absolute;
+
+    right:15px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    font-size:18px;
+
+}
+
+/* Button */
+
+button{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 15px 25px rgba(99,102,241,.25);
+
+}
+
+/* Demo */
+
+.demo{
+
+    margin-top:25px;
+
+    background:#eef2ff;
+
+    border-radius:15px;
+
+    padding:15px;
+
+    text-align:center;
+
+    color:#475569;
+
+    font-size:14px;
+
+}
+
+.demo strong{
+
+    color:#4f46e5;
+
+}
+
+/* Footer */
+
+.footer{
+
+    margin-top:20px;
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+}
+
+@media(max-width:500px){
+
+.login-container{
+
+width:90%;
+padding:30px;
+
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
 
 <div class="login-container">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Masuk</button>
-    
-    </div>
+
+<div class="logo">
+💰
+</div>
+
+<h1>Neo<span>Finance</span></h1>
+
+<p class="subtitle">
+Personal Wealth Lab
+</p>
+
+<div class="input-group">
+<input
+type="text"
+id="username"
+placeholder="Username">
+</div>
+
+<div class="input-group password-box">
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<span onclick="showPassword()">👁</span>
+
+</div>
+
+<button onclick="login()">
+Masuk
+</button>
+
+<div class="demo">
+
+<strong>Demo Account</strong>
+
+<br><br>
+
+Admin : <b>admin</b> / admin123
+
+<br>
+
+User : <b>user</b> / user123
+
+</div>
+
+<div class="footer">
+
+© 2026 Neo Finance
+
+</div>
+
+</div>
 
 <script>
-function login() {
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
 
-    if (username === "admin" && password === "admin123") {
-        localStorage.setItem("role", "admin");
-        window.location.href = "index.html";
-    } 
-    else if (username === "user" && password === "user123") {
-        localStorage.setItem("role", "user");
-        window.location.href = "index.html";
-    } 
-    else {
-        alert("Username atau Password salah");
-    }
+function showPassword(){
+
+const password=document.getElementById("password");
+
+if(password.type==="password"){
+
+password.type="text";
+
+}else{
+
+password.type="password";
+
 }
+
+}
+
+function login(){
+
+let username=document.getElementById("username").value.trim();
+
+let password=document.getElementById("password").value.trim();
+
+if(username==="admin" && password==="admin123"){
+
+localStorage.setItem("role","admin");
+
+localStorage.setItem("currentUser",JSON.stringify({
+username:"admin",
+role:"admin"
+}));
+
+window.location.href="index.html";
+
+}
+
+else if(username==="user" && password==="user123"){
+
+localStorage.setItem("role","user");
+
+localStorage.setItem("currentUser",JSON.stringify({
+username:"user",
+role:"user"
+}));
+
+window.location.href="index.html";
+
+}
+
+else{
+
+alert("Username atau Password salah!");
+
+}
+
+}
+
 </script>
 
 </body>
