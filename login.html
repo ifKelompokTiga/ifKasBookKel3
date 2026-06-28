@@ -6,33 +6,35 @@
 <title>Login KasBook</title>
 
 <style>
-body{
+body {
     font-family: Arial, sans-serif;
-    background:#f5f5f5;
+    background: #f5f5f5;
 }
 
-.login-container{
-    width:350px;
-    margin:100px auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,.1);
+.login-container {
+    width: 350px;
+    margin: 100px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
 }
 
-input{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    box-sizing: border-box; /* Tambahan agar input tidak melebihi container */
 }
 
-button{
-    width:100%;
-    padding:10px;
-    background:#2563eb;
-    color:white;
-    border:none;
-    cursor:pointer;
+button {
+    width: 100%;
+    padding: 10px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box; /* Tambahan agar button sejajar dengan input */
 }
 </style>
 </head>
@@ -40,61 +42,30 @@ button{
 <body>
 
 <div class="login-container">
-
     <h2>Login</h2>
-
     <input type="text" id="username" placeholder="Username">
-
     <input type="password" id="password" placeholder="Password">
-
     <button onclick="login()">Masuk</button>
-
-    <p>
-        Admin : admin / admin123<br>
-        User : user / user123
-    </p>
-
-</div>
+    
+    </div>
 
 <script>
+function login() {
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
 
-function login(){
-
-    let username =
-        document.getElementById("username").value;
-
-    let password =
-        document.getElementById("password").value;
-
-    if(
-        username === "admin" &&
-        password === "admin123"
-    ){
-
-        localStorage.setItem("role","admin");
-
+    if (username === "admin" && password === "admin123") {
+        localStorage.setItem("role", "admin");
         window.location.href = "index.html";
-
-    }
-
-    else if(
-        username === "user" &&
-        password === "user123"
-    ){
-
-        localStorage.setItem("role","user");
-
+    } 
+    else if (username === "user" && password === "user123") {
+        localStorage.setItem("role", "user");
         window.location.href = "index.html";
-
-    }
-
-    else{
-
+    } 
+    else {
         alert("Username atau Password salah");
-
     }
 }
-
 </script>
 
 </body>
