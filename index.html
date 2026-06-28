@@ -274,6 +274,11 @@ class="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[9999]">
     const currentUser =
         JSON.parse(localStorage.getItem('currentUser'));
 
+    if(currentUser){
+    document.getElementById("userName").innerHTML =
+        "👤 " + currentUser.username;
+    }
+
     if (currentUser) {
         document.getElementById('loginOverlay').style.display = 'none';
     }
