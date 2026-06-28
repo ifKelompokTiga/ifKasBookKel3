@@ -273,35 +273,26 @@ class="fixed inset-0 bg-slate-950/90 flex items-center justify-center z-[9999]">
     const dateFormat = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
     window.onload = () => {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-    const currentUser =
-    JSON.parse(localStorage.getItem('currentUser'));
+        // Jika tidak ada data login, lempar paksa kembali ke login.html
+        if (!currentUser) {
+            window.location.href = 'login.html';
+            return; // Hentikan proses render index.html
+        }
 
-    if (currentUser) {
+        // Tampilkan nama user di pojok kanan atas
+        document.getElementById("userName").innerHTML = "👤 " + currentUser.username;
 
-    document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('todayDate').innerText =
+            new Intl.DateTimeFormat('id-ID', { dateStyle: 'full' }).format(new Date());
 
-    document.getElementById("userName").innerHTML =
-        "👤 " + currentUser.username;
+        document.getElementById('date').valueAsDate = new Date();
 
-    }
-
-    if (currentUser) {
-        document.getElementById('loginOverlay').style.display = 'none';
-    }
-
-    document.getElementById('todayDate').innerText =
-        new Intl.DateTimeFormat(
-            'id-ID',
-            { dateStyle: 'full' }
-        ).format(new Date());
-
-    document.getElementById('date').valueAsDate = new Date();
-
-    updateCategory();
-    updateSummary();
-    renderTransactions();
-    lucide.createIcons();
+        updateCategory();
+        updateSummary();
+        renderTransactions();
+        lucide.createIcons();
     };
 
     function setType(type) {
@@ -482,18 +473,12 @@ function login() {
         alert('Username atau Password salah');
 
     }
-}
-function logout(){
-
-    if(confirm("Apakah Anda yakin ingin logout?")){
-
-        localStorage.removeItem("currentUser");
-
-        window.location.reload();
-
+}function logout(){
+        if(confirm("Apakah Anda yakin ingin logout?")){
+            localStorage.removeItem("currentUser");
+            window.location.href = "login.html"; // Arahkan kembali ke halaman login utama
+        }
     }
-
-}
     
 </script>
 </body>
