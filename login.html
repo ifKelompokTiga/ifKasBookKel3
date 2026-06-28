@@ -55,11 +55,13 @@ function login() {
     let password = document.getElementById("password").value;
 
     if (username === "admin" && password === "admin123") {
-        localStorage.setItem("role", "admin");
+        // Simpan data dalam format object JSON
+        localStorage.setItem("currentUser", JSON.stringify({ username: "admin", role: "admin" }));
         window.location.href = "index.html";
     } 
     else if (username === "user" && password === "user123") {
-        localStorage.setItem("role", "user");
+        // Simpan data dalam format object JSON
+        localStorage.setItem("currentUser", JSON.stringify({ username: "user", role: "user" }));
         window.location.href = "index.html";
     } 
     else {
