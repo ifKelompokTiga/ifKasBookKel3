@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login KasBook</title>
+<title>Login & Register KasBook</title>
 
 <style>
-/* Mengimpor font yang sama dengan index.html */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 body {
@@ -16,7 +15,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Latar belakang gradasi sesuai tema Neo Finance */
     background: radial-gradient(circle at top left, #c7d2fe 0%, transparent 35%),
                 radial-gradient(circle at bottom right, #ddd6fe 0%, transparent 40%),
                 linear-gradient(135deg, #eef2ff, #f8fafc);
@@ -24,7 +22,6 @@ body {
     position: relative;
 }
 
-/* Efek bola cahaya di latar belakang (Khas tema kamu) */
 body::before {
     content: ""; position: absolute; width: 450px; height: 450px;
     background: #6366f1; opacity: 0.08; border-radius: 50%;
@@ -36,13 +33,12 @@ body::after {
     bottom: -120px; right: -120px; filter: blur(40px); z-index: -1;
 }
 
-/* Form Login dengan efek Glassmorphism */
 .login-container {
     width: 100%;
     max-width: 380px;
     background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px); /* Dukungan Safari */
+    -webkit-backdrop-filter: blur(18px);
     padding: 40px;
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.5);
@@ -59,7 +55,6 @@ body::after {
     letter-spacing: -0.5px;
 }
 
-/* Styling Input agar lebih modern */
 input {
     width: 100%;
     padding: 15px 18px;
@@ -75,13 +70,11 @@ input {
     outline: none;
 }
 
-/* Efek saat input sedang diketik */
 input:focus {
     border-color: #6366f1;
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
 }
 
-/* Styling Tombol gradasi */
 button {
     width: 100%;
     padding: 15px;
@@ -105,32 +98,109 @@ button:hover {
 button:active {
     transform: translateY(1px);
 }
+
+.toggle-text {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.toggle-text a {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.toggle-text a:hover {
+    text-decoration: underline;
+}
+
+/* Menyembunyikan form yang tidak aktif */
+.hidden {
+    display: none;
+}
 </style>
 </head>
 
 <body>
 
 <div class="login-container">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Masuk</button>
-    
+    <div id="loginForm">
+        <h2>Login</h2>
+        <input type="text" id="loginUsername" placeholder="Username">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button onclick="login()">Masuk</button>
+        <p class="toggle-text">Belum punya akun? <a href="#" onclick="toggleForm()">Daftar Sekarang</a></p>
     </div>
 
-<script>
-function login() {
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
+    <div id="registerForm" class="hidden">
+        <h2>Daftar Akun</h2>
+        <input type="text" id="regUsername" placeholder="Buat Username Baru">
+        <input type="password" id="regPassword" placeholder="Buat Password Baru">
+        <button onclick="register()">Daftar</button>
+        <p class="toggle-text">Sudah punya akun? <a href="#" onclick="toggleForm()">Masuk di sini</a></p>
+    </div>
+</div>
 
-    if (username === "admin" && password === "admin123") {
-        // Simpan data dalam format object JSON
-        localStorage.setItem("currentUser", JSON.stringify({ username: "admin", role: "admin" }));
+<script>
+// Data akun bawaan sistem
+const defaultUsers = {
+    "admin": { password: "admin123", role: "admin" },
+    "user": { password: "user123", role: "user" }
+};
+
+// Mengambil data akun kustom dari localStorage atau membuat objek kosong jika belum ada
+let customUsers = JSON.parse(localStorage.getItem("registeredUsers")) || {};
+
+// Fungsi untuk beralih tampilan form
+function toggleForm() {
+    document.getElementById("loginForm").classList.toggle("hidden");
+    document.getElementById("registerForm").classList.toggle("hidden");
+    
+    // Kosongkan input saat berpindah form
+    document.getElementById("loginUsername").value = "";
+    document.getElementById("loginPassword").value = "";
+    document.getElementById("regUsername").value = "";
+    document.getElementById("regPassword").value = "";
+}
+
+// Fungsi Pendaftaran Akun Baru
+function register() {
+    let username = document.getElementById("regUsername").value.trim();
+    let password = document.getElementById("regPassword").value.trim();
+
+    if (username === "" || password === "") {
+        alert("Username dan Password tidak boleh kosong!");
+        return;
+    }
+
+    // Periksa apakah username sudah terdaftar di sistem bawaan atau kustom
+    if (defaultUsers[username] || customUsers[username]) {
+        alert("Username ini sudah terdaftar. Silakan gunakan nama lain.");
+        return;
+    }
+
+    // Simpan akun baru ke objek kustom dengan role standar "user"
+    customUsers[username] = { password: password, role: "user" };
+    localStorage.setItem("registeredUsers", JSON.stringify(customUsers));
+
+    alert("Pendaftaran berhasil! Silakan login dengan akun baru Anda.");
+    toggleForm(); // Otomatis kembali ke form login
+}
+
+// Fungsi Login
+function login() {
+    let username = document.getElementById("loginUsername").value.trim();
+    let password = document.getElementById("loginPassword").value.trim();
+
+    // 1. Cek dari user bawaan terlebih dahulu
+    if (defaultUsers[username] && defaultUsers[username].password === password) {
+        localStorage.setItem("currentUser", JSON.stringify({ username: username, role: defaultUsers[username].role }));
         window.location.href = "index.html";
     } 
-    else if (username === "user" && password === "user123") {
-        // Simpan data dalam format object JSON
-        localStorage.setItem("currentUser", JSON.stringify({ username: "user", role: "user" }));
+    // 2. Cek dari user kustom hasil registrasi baru
+    else if (customUsers[username] && customUsers[username].password === password) {
+        localStorage.setItem("currentUser", JSON.stringify({ username: username, role: customUsers[username].role }));
         window.location.href = "index.html";
     } 
     else {
