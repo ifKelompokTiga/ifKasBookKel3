@@ -12,6 +12,8 @@
     <!-- TAILWIND & ICONS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- CHART.JS (Dipindahkan ke atas agar library siap digunakan) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         tailwind.config = {
@@ -73,20 +75,18 @@
                 <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">Personal Wealth Lab</p>
             </div>
         </div>
+        
         <div class="flex items-center gap-4">
-
-        <div class="hidden md:block text-right">
-            <p id="userName" class="font-bold text-slate-800"></p>
-            <p id="todayDate" class="text-sm font-semibold text-slate-700"></p>
-            <p class="text-xs text-slate-400">Status: Kelompok 2</p>
-        </div>
-
+            <div class="hidden md:block text-right">
+                <p id="userName" class="font-bold text-slate-800"></p>
+                <p id="todayDate" class="text-sm font-semibold text-slate-700"></p>
+                <p class="text-xs text-slate-400">Status: Kelompok 2</p>
+            </div>
             <button
                 onclick="logout()"
                 class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold transition">
                 Logout
             </button>
-
         </div>
     </div>
 </nav>
@@ -139,9 +139,10 @@
         </div>
     </div>
 
+    <!-- MAIN CONTENT GRID -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- TRANSACTION FORM -->
+        <!-- TRANSACTION FORM (Kiri: 4 Kolom) -->
         <div class="lg:col-span-4 space-y-6">
             <div class="glass-card rounded-[2rem] p-8 shadow-xl">
                 <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
@@ -195,23 +196,32 @@
             </div>
         </div>
 
-        <div class="chart-section">
+        <!-- RIGHT SECTION (Kanan: 8 Kolom untuk Chart dan History) -->
+        <div class="lg:col-span-8 space-y-8">
+            
+            <!-- CHART SECTION (Susunan Horizontal yang Rapi) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card rounded-[2rem] p-6 shadow-xl">
+                    <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-500"></i> Pemasukan vs Pengeluaran
+                    </h3>
+                    <div class="relative h-[220px] w-full flex items-center justify-center">
+                        <canvas id="incomeExpenseChart"></canvas>
+                    </div>
+                </div>
 
-    <div class="chart-box">
-        <h3>Pemasukan vs Pengeluaran</h3>
-        <canvas id="incomeExpenseChart"></canvas>
-    </div>
+                <div class="glass-card rounded-[2rem] p-6 shadow-xl">
+                    <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-rose-500"></i> Kategori Pengeluaran
+                    </h3>
+                    <div class="relative h-[220px] w-full flex items-center justify-center">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-    <div class="chart-box">
-        <h3>Kategori Pengeluaran</h3>
-        <canvas id="categoryChart"></canvas>
-    </div>
-
-    </div>
-
-        <!-- HISTORY LIST -->
-        <div class="lg:col-span-8">
-            <div class="glass-card rounded-[2rem] p-8 flex flex-col h-[750px]">
+            <!-- HISTORY LIST -->
+            <div class="glass-card rounded-[2rem] p-8 flex flex-col h-[550px]">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                     <div>
                         <h3 class="text-xl font-bold">Transaction History</h3>
@@ -234,9 +244,10 @@
 
                 <!-- List Content -->
                 <div id="transactionList" class="custom-scroll overflow-y-auto flex-1 space-y-4 pr-2">
-                    <!-- Cards will be injected here -->
+                    <!-- Cards akan diinjeksi di sini -->
                 </div>
             </div>
+
         </div>
     </div>
 </main>
@@ -249,6 +260,10 @@
     let currentType = 'income';
     let currentFilter = 'all';
 
+    // Variabel global untuk menyimpan instance Chart agar bisa direset saat data berubah
+    let infoChartInstance = null;
+    let categoryChartInstance = null;
+
     const categories = {
         income: ['Salary', 'Bonus', 'Investment', 'Business', 'Freelance', 'Gifts'],
         expense: ['Food & Drink', 'Transport', 'Shopping', 'Bills', 'Health', 'Entertainment']
@@ -260,18 +275,13 @@
     window.onload = () => {
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-        // Jika tidak ada data login, lempar paksa kembali ke login.html
         if (!currentUser) {
             window.location.href = 'login.html';
-            return; // Hentikan proses render index.html
+            return;
         }
 
-        // Tampilkan nama user di pojok kanan atas
         document.getElementById("userName").innerHTML = "👤 " + currentUser.username;
-
-        document.getElementById('todayDate').innerText =
-            new Intl.DateTimeFormat('id-ID', { dateStyle: 'full' }).format(new Date());
-
+        document.getElementById('todayDate').innerText = new Intl.DateTimeFormat('id-ID', { dateStyle: 'full' }).format(new Date());
         document.getElementById('date').valueAsDate = new Date();
 
         updateCategory();
@@ -333,9 +343,22 @@
 
     function updateSummary() {
         let income = 0, expense = 0, inCount = 0, exCount = 0;
+        
+        // Objek penampung total pengeluaran per kategori
+        let expenseDataByCat = {};
+        categories.expense.forEach(c => expenseDataByCat[c] = 0);
+
         transactions.forEach(tx => {
-            if(tx.type === 'income') { income += tx.amount; inCount++; }
-            else { expense += tx.amount; exCount++; }
+            if(tx.type === 'income') { 
+                income += tx.amount; 
+                inCount++; 
+            } else { 
+                expense += tx.amount; 
+                exCount++;
+                if (expenseDataByCat[tx.category] !== undefined) {
+                    expenseDataByCat[tx.category] += tx.amount;
+                }
+            }
         });
 
         document.getElementById('saldo').innerText = currency.format(income - expense);
@@ -344,6 +367,67 @@
         document.getElementById('txCount').innerText = `${transactions.length} TRANSACTIONS`;
         document.getElementById('incomeCount').innerText = `${inCount} records`;
         document.getElementById('expenseCount').innerText = `${exCount} records`;
+
+        // Panggil fungsi render grafik setiap kali ringkasan data berubah
+        renderCharts(income, expense, expenseDataByCat);
+    }
+
+    // ================= LOGIKA UTAMA RENDER CHART.JS =================
+    function renderCharts(totalIncome, totalExpense, expenseDataByCat) {
+        // 1. Setup Grafik Pemasukan vs Pengeluaran (Doughnut Chart)
+        const ctx1 = document.getElementById('incomeExpenseChart').getContext('2d');
+        if (infoChartInstance) infoChartInstance.destroy(); // Hancurkan sisa cache chart sebelumnya
+        
+        infoChartInstance = new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Income', 'Expense'],
+                datasets: [{
+                    data: [totalIncome, totalExpense],
+                    backgroundColor: ['#10b981', '#f43f5e'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { weight: 600 } } }
+                }
+            }
+        });
+
+        // 2. Setup Grafik Kategori Pengeluaran (Bar Chart)
+        const ctx2 = document.getElementById('categoryChart').getContext('2d');
+        if (categoryChartInstance) categoryChartInstance.destroy();
+
+        const dataValues = Object.values(expenseDataByCat);
+
+        categoryChartInstance = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(expenseDataByCat),
+                datasets: [{
+                    label: 'Pengeluaran (Rp)',
+                    data: dataValues,
+                    backgroundColor: '#6366f1',
+                    borderRadius: 8,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, grid: { display: false } },
+                    x: { grid: { display: false } }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
     }
 
     function setFilter(type, el) {
@@ -416,57 +500,30 @@
     }
 
     // ================= LOGIN SYSTEM =================
+    const USERS = {
+        admin: { password: 'admin123', role: 'admin' },
+        user: { password: 'user123', role: 'user' }
+    };
 
-const USERS = {
-    admin: {
-        password: 'admin123',
-        role: 'admin'
-    },
-    user: {
-        password: 'user123',
-        role: 'user'
-    }
-};
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
 
-function login() {
-
-    const username =
-        document.getElementById('username').value;
-
-    const password =
-        document.getElementById('password').value;
-
-    if (
-        USERS[username] &&
-        USERS[username].password === password
-    ) {
-
-        localStorage.setItem(
-            'currentUser',
-            JSON.stringify({
-                username,
-                role: USERS[username].role
-            })
-        );
-
-        document.getElementById('loginOverlay').style.display = 'none';
-
-        showToast('Login berhasil');
-
-    } else {
-
-        alert('Username atau Password salah');
-
-    }
-}function logout(){
-        if(confirm("Apakah Anda yakin ingin logout?")){
-            localStorage.removeItem("currentUser");
-            window.location.href = "login.html"; // Arahkan kembali ke halaman login utama
+        if (USERS[username] && USERS[username].password === password) {
+            localStorage.setItem('currentUser', JSON.stringify({ username, role: USERS[username].role }));
+            document.getElementById('loginOverlay').style.display = 'none';
+            showToast('Login berhasil');
+        } else {
+            alert('Username atau Password salah');
         }
     }
-    
+
+    function logout(){
+        if(confirm("Apakah Anda yakin ingin logout?")){
+            localStorage.removeItem("currentUser");
+            window.location.href = "login.html";
+        }
+    }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="script.js"></script>
 </body>
 </html>
