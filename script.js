@@ -2,6 +2,8 @@
 let transactions = JSON.parse(localStorage.getItem('bkd_tx') || '[]');
 let currentType   = 'income';
 let currentFilter = 'all';
+let incomeChart;
+let categoryChart;
 
 // ── DATA ──
 const CATEGORIES = {
@@ -215,6 +217,7 @@ function updateSummary() {
   document.getElementById('txCount')     .textContent = `${transactions.length} transaksi total`;
   document.getElementById('incomeCount') .textContent = `${ic} catatan`;
   document.getElementById('expenseCount').textContent = `${ec} catatan`;
+  updateCharts();
 }
 
 // ── UTILS ──
