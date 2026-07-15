@@ -1,22 +1,15 @@
 <?php
 
-$host = "localhost";
-$user = "root";
-$pass = "root";
-$db   = "bukukas";
+$host="localhost";
+$user="root";
+$pass="root";
+$db="bukukas";
 
-
-$koneksi = mysqli_connect(
-    $host,
-    $user,
-    $pass,
-    $db
-);
-
+$koneksi = mysqli_connect("localhost", "root", "root", "bukukas");
 
 if(!$koneksi){
 
-    die("Database gagal terkoneksi : ".mysqli_connect_error());
+die("Koneksi Database Gagal");
 
 }
 

@@ -1,6 +1,7 @@
 <?php
 
-session_start();
+require "../config/user.php";
+require "../config/koneksi.php";
 
 include "../config/koneksi.php";
 
