@@ -1,51 +1,12 @@
-<?php
-
-session_start();
-
-?>
-
 <!DOCTYPE html>
-<html>
-
+<html lang="id">
 <head>
-
-<title>Buku Kas Digital</title>
-
-<link rel="stylesheet" href="assets/css/style.css">
-
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="0; url=index.php" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mengarahkan ke Nikko Kas</title>
 </head>
-
-
 <body>
-
-
-<div class="hero">
-
-
-<h1>
-Buku Kas Digital
-</h1>
-
-
-<p>
-Kelola keuangan dengan mudah dan modern
-</p>
-
-
-<a href="login.php" class="btn">
-Login
-</a>
-
-
-<a href="register.php" class="btn btn2">
-Daftar
-</a>
-
-
-</div>
-
-
-
+  <p>Halaman sedang dialihkan ke <a href="index.php">index.php</a>.</p>
 </body>
-
 </html>
